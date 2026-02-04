@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
 export class App {
     protected readonly title = signal('angular-date-picker');
     public selectedDate = signal<Date | null>(null);
+    public isPickerOpen = signal(false);
+    public pickerPosition = signal<'top' | 'bottom' | 'left' | 'right'>('bottom');
     
     // Date and time restrictions
     public pickerRestrictions = {
@@ -31,5 +33,10 @@ export class App {
     onDateSelected(date: Date) {
       this.selectedDate.set(date);
       localStorage.setItem('selectedDate', date.toISOString());
+    }
+
+    clearDate() {
+      this.selectedDate.set(null);
+      localStorage.removeItem('selectedDate');
     }
 }

@@ -1,14 +1,6 @@
 <div class="date-picker-container">
-  <button class="picker-toggle" (click)="togglePicker()" type="button" aria-haspopup="dialog" [attr.aria-expanded]="isOpen()">
-    @if (selectedDate()) {
-      {{ selectedDate() | date: 'MMM dd, yyyy HH:mm a' }}
-    } @else {
-      + choose date
-    }
-  </button>
-
   @if (isOpen()) {
-    <div class="picker-overlay" [class.blur-enabled]="enableBlur()" role="dialog" aria-label="Date and time picker">
+    <div #overlay class="picker-overlay" [class.blur-enabled]="enableBlur()" [class]="position()" role="dialog" aria-label="Date and time picker">
       <div class="calendar-header">
         <div class="label-group">
           <span class="month-label">{{ monthYearLabel() }}</span>

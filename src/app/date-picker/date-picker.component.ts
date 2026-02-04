@@ -1,5 +1,4 @@
-import { Component, OnInit, signal, computed, output, model, input, ChangeDetectionStrategy } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { Component, signal, computed, output, model, input, ChangeDetectionStrategy, effect, ElementRef, ViewChild, Renderer2, inject, HostListener } from '@angular/core';
 
 export interface DateRestriction {
     minDate?: Date;
@@ -29,18 +28,24 @@ interface CalendarDay {
 
 @Component({
     selector: 'app-date-picker',
-    imports: [DatePipe],
+    imports: [],
     templateUrl: './date-picker.component.html',
     styleUrls: ['./date-picker.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DatePickerComponent implements OnInit {
+export class DatePickerComponent {
     // Signals for state management
-    public isOpen = signal(false);
+    public isOpen = model(false);
     public selectedDate = model<Date | null>(null);
     public viewDate = signal(new Date());
     public enableBlur = model<boolean>(false);
+    public position = input<'top' | 'bottom' | 'left' | 'right'>('bottom');
     public restrictions = input<DateRestriction | null>(null);
+
+    @ViewChild('overlay') overlay!: ElementRef;
+    
+    private elementRef = inject(ElementRef);
+    private renderer = inject(Renderer2);
 
     // Computed restriction bounds
     private effectiveMinDate = computed(() => {
@@ -166,8 +171,75 @@ export class DatePickerComponent implements OnInit {
       return days;
     });
 
-    ngOnInit(): void {
-      this.initWorkingState();
+    constructor() {
+      effect(() => {
+        if (this.isOpen()) {
+          this.initWorkingState();
+          this.viewMode.set('calendar');
+          // Wait for render
+          setTimeout(() => this.updateOverlayPosition());
+        }
+      });
+    }
+
+    @HostListener('window:resize')
+    @HostListener('window:scroll')
+    public onResizeOrScroll(): void {
+      if (this.isOpen()) {
+        this.updateOverlayPosition();
+      }
+    }
+
+    private updateOverlayPosition(): void {
+      if (!this.overlay || !this.elementRef) return;
+
+      const host = this.elementRef.nativeElement;
+      const overlayEl = this.overlay.nativeElement;
+      const hostRect = host.getBoundingClientRect();
+      const overlayRect = overlayEl.getBoundingClientRect();
+      
+      const pos = this.position();
+      const margin = 8;
+      
+      let top = 0;
+      let left = 0;
+
+      switch (pos) {
+        case 'bottom':
+          top = hostRect.bottom + margin;
+          left = hostRect.left;
+          break;
+        case 'top':
+          top = hostRect.top - overlayRect.height - margin;
+          left = hostRect.left;
+          break;
+        case 'left':
+          top = hostRect.top;
+          left = hostRect.left - overlayRect.width - margin;
+          break;
+        case 'right':
+          top = hostRect.top;
+          left = hostRect.right + margin;
+          break;
+      }
+
+      // Clamping to viewport
+      const viewportHeight = window.innerHeight;
+      const viewportWidth = window.innerWidth;
+
+      if (left < margin) left = margin;
+      if (left + overlayRect.width > viewportWidth - margin) {
+        left = viewportWidth - overlayRect.width - margin;
+      }
+
+      if (top < margin) top = margin;
+      if (top + overlayRect.height > viewportHeight - margin) {
+        top = viewportHeight - overlayRect.height - margin;
+      }
+
+      this.renderer.setStyle(overlayEl, 'position', 'fixed');
+      this.renderer.setStyle(overlayEl, 'top', `${top}px`);
+      this.renderer.setStyle(overlayEl, 'left', `${left}px`);
     }
 
     private initWorkingState(): void {
@@ -212,13 +284,6 @@ export class DatePickerComponent implements OnInit {
       };
     }
 
-    public togglePicker(): void {
-      if (!this.isOpen()) {
-        this.initWorkingState();
-        this.viewMode.set('calendar');
-      }
-      this.isOpen.update(v => !v);
-    }
 
     public selectDay(day: CalendarDay): void {
       if (day.isDisabled) return;

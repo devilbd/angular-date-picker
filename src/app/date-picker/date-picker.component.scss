@@ -55,34 +55,9 @@
     position: relative;
 }
 
-.picker-toggle {
-    background: var(--dp-bg-input);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--dp-border);
-    color: var(--dp-text-main);
-    padding: 8px 16px;
-    border-radius: var(--dp-radius-md);
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: var(--dp-transition);
-    white-space: nowrap;
-
-    &:hover {
-        background: var(--dp-bg-hover);
-        border-color: var(--dp-border);
-        box-shadow: var(--dp-shadow-main);
-    }
-
-    &:active {
-        transform: scale(0.98);
-    }
-}
 
 .picker-overlay {
   position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
   z-index: 1000;
   width: 280px;
   background: var(--dp-bg-overlay);
@@ -94,6 +69,20 @@
     var(--dp-shadow-inner);
   animation: slideDown 0.3s cubic-bezier(0, 0, 0.2, 1);
   overflow: hidden;
+
+  // Position Variants
+
+  &.top {
+    animation-name: slideUp;
+  }
+
+  &.left {
+    animation-name: slideRight;
+  }
+
+  &.right {
+    animation-name: slideLeft;
+  }
 
   &.blur-enabled {
     background: var(--dp-bg-overlay-blur);
@@ -110,6 +99,39 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideLeft {
+    from {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideRight {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 

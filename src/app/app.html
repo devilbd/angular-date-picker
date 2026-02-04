@@ -1,10 +1,38 @@
 <div>
   <div>Date picker</div>
-  <div>Selected date - {{ selectedDate() | date: 'MMM dd, yyyy HH:mm a' }}</div>
-  <app-date-picker 
-      [selectedDate]="selectedDate()" 
-      (dateSelected)="onDateSelected($event)" 
-      [restrictions]="pickerRestrictions"
-      [enableBlur]="true">
-  </app-date-picker>
+  <div>
+    Selected date - {{ selectedDate() | date: 'MMM dd, yyyy HH:mm a' }}
+    @if (selectedDate()) {
+      <button (click)="clearDate()" type="button" style="margin-left: 10px; cursor: pointer;">Clear</button>
+    }
+  </div>
+
+  <div style="margin-top: 10px;">
+    Position: 
+    <select [value]="pickerPosition()" (change)="pickerPosition.set($any($event.target).value)">
+      <option value="top">Top</option>
+      <option value="bottom">Bottom</option>
+      <option value="left">Left</option>
+      <option value="right">Right</option>
+    </select>
+  </div>
+
+  <div style="position: relative; margin-top: 40px; display: inline-block;">
+    <button (click)="isPickerOpen.set(!isPickerOpen())" type="button" style="padding: 10px 20px; cursor: pointer;">
+      @if (selectedDate()) {
+        {{ selectedDate() | date: 'MMM dd, yyyy HH:mm a' }}
+      } @else {
+        + choose date
+      }
+    </button>
+    
+    <app-date-picker 
+        [(isOpen)]="isPickerOpen"
+        [position]="pickerPosition()"
+        [selectedDate]="selectedDate()" 
+        (dateSelected)="onDateSelected($event)" 
+        [restrictions]="pickerRestrictions"
+        [enableBlur]="true">
+    </app-date-picker>
+  </div>
 </div>
