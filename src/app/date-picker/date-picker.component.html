@@ -10,9 +10,11 @@
   @if (isOpen()) {
     <div class="picker-overlay" role="dialog" aria-label="Date and time picker">
       <div class="calendar-header">
-        <button (click)="prevMonth()" type="button" aria-label="Previous month">&lt;</button>
         <span class="month-label">{{ monthYearLabel() }}</span>
-        <button (click)="nextMonth()" type="button" aria-label="Next month">&gt;</button>
+        <div class="header-nav">
+          <button (click)="prevMonth()" type="button" aria-label="Previous month">&lt;</button>
+          <button (click)="nextMonth()" type="button" aria-label="Next month">&gt;</button>
+        </div>
       </div>
 
       <div class="calendar-grid">
@@ -37,37 +39,40 @@
       </div>
 
       <div class="time-picker">
-        <div class="time-input-group">
-          <input 
-            type="number" 
-            min="1" 
-            max="12" 
-            [value]="workingHours()" 
-            (input)="workingHours.set($any($event.target).valueAsNumber); onTimeChange()"
-            (change)="onTimeChange()"
-            (keydown)="handleTimeKeydown($event)"
-            aria-label="Hours"
+        <div class="time-inner-container">
+          <div class="time-input-group">
+            <input 
+              type="number" 
+              min="1" 
+              max="12" 
+              [value]="workingHours()" 
+              (input)="workingHours.set($any($event.target).valueAsNumber); onTimeChange()"
+              (change)="onTimeChange()"
+              (keydown)="handleTimeKeydown($event)"
+              aria-label="Hours"
+            >
+            <span class="separator">:</span>
+            <input 
+              type="number" 
+              min="0" 
+              max="59" 
+              [value]="workingMinutes()" 
+              (input)="workingMinutes.set($any($event.target).valueAsNumber); onTimeChange()"
+              (change)="onTimeChange()"
+              (keydown)="handleTimeKeydown($event)"
+              aria-label="Minutes"
+            >
+          </div>
+          <select 
+            class="period-select"
+            [value]="workingPeriod()" 
+            (change)="workingPeriod.set($any($event.target).value); onTimeChange()"
+            aria-label="AM/PM"
           >
-          <span>:</span>
-          <input 
-            type="number" 
-            min="0" 
-            max="59" 
-            [value]="workingMinutes()" 
-            (input)="workingMinutes.set($any($event.target).valueAsNumber); onTimeChange()"
-            (change)="onTimeChange()"
-            (keydown)="handleTimeKeydown($event)"
-            aria-label="Minutes"
-          >
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
         </div>
-        <select 
-          [value]="workingPeriod()" 
-          (change)="workingPeriod.set($any($event.target).value); onTimeChange()"
-          aria-label="AM/PM"
-        >
-          <option value="AM">AM</option>
-          <option value="PM">PM</option>
-        </select>
       </div>
 
       <div class="picker-footer">
