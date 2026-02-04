@@ -1,6 +1,41 @@
 :host {
-    display: inline-block;
-    font-family: 'Inter', sans-serif;
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+
+  // Primary Colors
+  --dp-primary-color: #3b82f6;
+  --dp-primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --dp-primary-shadow: rgba(59, 130, 246, 0.3);
+  
+  // Background Colors
+  --dp-bg-overlay: linear-gradient(145deg, rgba(30,32,45, 0.98), rgba(18,18,25, 0.98));
+  --dp-bg-overlay-blur: linear-gradient(145deg, rgba(30,32,45, 0.7), rgba(18,18,25, 0.7));
+  --dp-bg-input: rgba(255, 255, 255, 0.05);
+  --dp-bg-hover: rgba(255, 255, 255, 0.1);
+  --dp-bg-subtle: rgba(255, 255, 255, 0.02);
+  
+  // Text Colors
+  --dp-text-main: #ffffff;
+  --dp-text-secondary: #cccccc;
+  --dp-text-muted: #888888;
+  --dp-text-off: #444444;
+  --dp-text-weekday: #666666;
+  
+  // Borders & Shadows
+  --dp-border: rgba(255, 255, 255, 0.15);
+  --dp-border-subtle: rgba(255, 255, 255, 0.05);
+  --dp-shadow-main: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --dp-shadow-inner: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  
+  // Dimensions
+  --dp-radius-xl: 16px;
+  --dp-radius-lg: 12px;
+  --dp-radius-md: 8px;
+  --dp-radius-circle: 50%;
+  
+  // Effects
+  --dp-blur-intensity: 25px;
+  --dp-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .date-picker-container {
@@ -8,20 +43,20 @@
 }
 
 .picker-toggle {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--dp-bg-input);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #000000;
+    border: 1px solid var(--dp-border);
+    color: #000;
     padding: 8px 16px;
-    border-radius: 8px;
+    border-radius: var(--dp-radius-md);
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: var(--dp-transition);
     white-space: nowrap;
 
     &:hover {
-        background: rgba(255, 255, 255, 0.15);
+        background: var(--dp-bg-hover);
         border-color: rgba(255, 255, 255, 0.4);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
@@ -37,20 +72,20 @@
   left: 0;
   z-index: 1000;
   width: 280px;
-  background: rgba(20, 20, 25, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 16px;
+  background: var(--dp-bg-overlay);
+  border: 1px solid var(--dp-border);
+  border-radius: var(--dp-radius-xl);
   padding: 20px;
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    var(--dp-shadow-main),
+    var(--dp-shadow-inner);
   animation: slideDown 0.3s cubic-bezier(0, 0, 0.2, 1);
   overflow: hidden;
 
   &.blur-enabled {
-    background: rgba(20, 20, 25, 0.7);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    background: var(--dp-bg-overlay-blur);
+    backdrop-filter: blur(var(--dp-blur-intensity)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--dp-blur-intensity)) saturate(180%);
   }
 }
 
@@ -78,7 +113,7 @@
     gap: 4px;
 
     .month-label {
-      color: #fff;
+      color: var(--dp-text-main);
       font-weight: 600;
       font-size: 15px;
       letter-spacing: -0.01em;
@@ -87,18 +122,18 @@
     .year-toggle {
       background: transparent;
       border: none;
-      color: #888;
+      color: var(--dp-text-muted);
       cursor: pointer;
       padding: 4px;
-      border-radius: 50%;
+      border-radius: var(--dp-radius-circle);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s;
+      transition: var(--dp-transition);
 
       &:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: #3b82f6;
+        background: var(--dp-bg-hover);
+        color: var(--dp-primary-color);
       }
     }
   }
@@ -108,26 +143,26 @@
     gap: 8px;
 
     button {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #ccc;
+      background: var(--dp-bg-input);
+      border: 1px solid var(--dp-border-subtle);
+      color: var(--dp-text-secondary);
       cursor: pointer;
       width: 28px;
       height: 28px;
-      border-radius: 50%;
+      border-radius: var(--dp-radius-circle);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: var(--dp-transition);
       font-size: 14px;
       line-height: 1;
 
       &:hover {
-        background: #3b82f6;
-        border-color: #3b82f6;
-        color: #fff;
+        background: var(--dp-primary-color);
+        border-color: var(--dp-primary-color);
+        color: var(--dp-text-main);
         transform: scale(1.1);
-        box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+        box-shadow: 0 0 12px var(--dp-primary-shadow);
       }
 
       &:active {
@@ -146,7 +181,7 @@
     .weekday {
         text-align: center;
         font-size: 11px;
-        color: #666;
+        color: var(--dp-text-weekday);
         font-weight: 500;
         padding-bottom: 8px;
     }
@@ -155,35 +190,35 @@
         aspect-ratio: 1;
         background: transparent;
         border: none;
-        color: #ccc;
+        color: var(--dp-text-secondary);
         font-size: 13px;
-        border-radius: 50%;
+        border-radius: var(--dp-radius-circle);
         cursor: pointer;
-        transition: all 0.2s;
+        transition: var(--dp-transition);
         display: flex;
         align-items: center;
         justify-content: center;
 
         &:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            background: var(--dp-bg-hover);
+            color: var(--dp-text-main);
         }
 
         &.off-month {
-            color: #444;
+            color: var(--dp-text-off);
         }
 
         &.today {
-            color: #3b82f6;
+            color: var(--dp-primary-color);
             font-weight: bold;
             position: relative;
         }
 
         &.selected {
-            background: #3b82f6;
-            color: #fff;
+            background: var(--dp-primary-color);
+            color: var(--dp-text-main);
             font-weight: bold;
-            border-radius: 50%;
+            border-radius: var(--dp-radius-circle);
         }
     }
 }
@@ -229,15 +264,15 @@
   width: 100%;
   overflow-y: auto;
   padding: 4px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 12px;
+  background: var(--dp-bg-subtle);
+  border-radius: var(--dp-radius-lg);
 
   /* Scrollbar styling */
   &::-webkit-scrollbar {
     width: 4px;
   }
   &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--dp-border-subtle);
     border-radius: 10px;
   }
   &::-webkit-scrollbar-thumb {
@@ -246,27 +281,27 @@
   }
 
   .year-cell {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    color: #ccc;
+    background: var(--dp-bg-input);
+    border: 1px solid var(--dp-border-subtle);
+    color: var(--dp-text-secondary);
     padding: 10px;
-    border-radius: 8px;
+    border-radius: var(--dp-radius-md);
     cursor: pointer;
     font-size: 14px;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: var(--dp-transition);
 
     &:hover {
       background: rgba(59, 130, 246, 0.1);
-      border-color: rgba(59, 130, 246, 0.3);
-      color: #fff;
+      border-color: var(--dp-primary-shadow);
+      color: var(--dp-text-main);
     }
 
     &.selected {
-      background: #3b82f6;
-      color: #fff;
-      border-color: #3b82f6;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      background: var(--dp-primary-color);
+      color: var(--dp-text-main);
+      border-color: var(--dp-primary-color);
+      box-shadow: 0 4px 12px var(--dp-primary-shadow);
     }
   }
 }
@@ -274,21 +309,21 @@
 .time-picker {
   display: flex;
   justify-content: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--dp-border-subtle);
   padding-top: 20px;
 
   .time-inner-container {
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    background: var(--dp-bg-input);
+    border: 1px solid var(--dp-border-subtle);
+    border-radius: var(--dp-radius-lg);
     padding: 4px;
     gap: 0;
-    transition: all 0.2s ease;
+    transition: var(--dp-transition);
 
     &:focus-within {
-      border-color: #3b82f6;
+      border-color: var(--dp-primary-color);
       background: rgba(255, 255, 255, 0.08);
       box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
     }
@@ -303,7 +338,7 @@
       width: 32px;
       background: transparent;
       border: none;
-      color: #fff;
+      color: var(--dp-text-main);
       text-align: center;
       padding: 6px 0;
       font-size: 15px;
@@ -311,7 +346,7 @@
 
       &:focus {
         outline: none;
-        color: #3b82f6;
+        color: var(--dp-primary-color);
       }
 
       &::-webkit-inner-spin-button {
@@ -327,16 +362,16 @@
   }
 
   .period-select {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--dp-bg-hover);
     border: none;
-    border-radius: 8px;
-    color: #fff;
+    border-radius: var(--dp-radius-md);
+    color: var(--dp-text-main);
     padding: 6px 12px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     appearance: none;
-    transition: all 0.2s ease;
+    transition: var(--dp-transition);
     margin-left: 4px;
 
     &:hover {
@@ -349,7 +384,7 @@
 
     option {
       background: #1a1a20;
-      color: #fff;
+      color: var(--dp-text-main);
     }
   }
 }
@@ -361,16 +396,16 @@
 
     .confirm-button {
         width: 100%;
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-        color: white;
+        background: var(--dp-primary-gradient);
+        color: var(--dp-text-main);
         border: none;
         padding: 12px 24px;
-        border-radius: 8px;
+        border-radius: var(--dp-radius-md);
         font-size: 14px;
         font-weight: 600;
         cursor: pointer;
-        transition: all 0.2s ease;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        transition: var(--dp-transition);
+        box-shadow: 0 4px 12px var(--dp-primary-shadow);
 
         &:hover {
             transform: translateY(-1px);
@@ -384,3 +419,4 @@
         }
     }
 }
+
