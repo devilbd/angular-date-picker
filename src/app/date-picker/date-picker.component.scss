@@ -121,8 +121,8 @@
 
     .year-toggle {
       background: transparent;
-      border: none;
-      color: var(--dp-text-muted);
+      border: 1px solid transparent;
+      color: rgba(59, 130, 246, 0.6);
       cursor: pointer;
       padding: 4px;
       border-radius: var(--dp-radius-circle);
@@ -143,9 +143,9 @@
     gap: 8px;
 
     button {
-      background: var(--dp-bg-input);
-      border: 1px solid var(--dp-border-subtle);
-      color: var(--dp-text-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      color: rgba(59, 130, 246, 0.6);
       cursor: pointer;
       width: 28px;
       height: 28px;
@@ -158,11 +158,10 @@
       line-height: 1;
 
       &:hover {
-        background: var(--dp-primary-color);
-        border-color: var(--dp-primary-color);
-        color: var(--dp-text-main);
-        transform: scale(1.1);
-        box-shadow: 0 0 12px var(--dp-primary-shadow);
+        background: var(--dp-bg-hover);
+        border-color: transparent;
+        color: var(--dp-primary-color);
+        box-shadow: none;
       }
 
       &:active {
