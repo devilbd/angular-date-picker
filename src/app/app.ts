@@ -10,10 +10,17 @@ import { CommonModule } from '@angular/common';
 })
 export class App {
     protected readonly title = signal('angular-date-picker');
+    public selectedDate = signal<Date | null>(null);
 
-    selectedDate: Date | null = null;
+    constructor() {
+      const saved = localStorage.getItem('selectedDate');
+      if (saved) {
+        this.selectedDate.set(new Date(saved));
+      }
+    }
 
     onDateSelected(date: Date) {
-      this.selectedDate = date;
+      this.selectedDate.set(date);
+      localStorage.setItem('selectedDate', date.toISOString());
     }
 }

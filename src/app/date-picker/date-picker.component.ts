@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, signal, computed, output, model, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 interface CalendarDay {
@@ -18,7 +18,7 @@ interface CalendarDay {
 export class DatePickerComponent implements OnInit {
     // Signals for state management
     public isOpen = signal(false);
-    public selectedDate = signal<Date | null>(null);
+    public selectedDate = model<Date | null>(null);
     public viewDate = signal(new Date());
 
     // Working (unconfirmed) signals
