@@ -1,4 +1,5 @@
 <div>
   <div>Date picker</div>
+  <div>Selected date - {{ selectedDate | date: 'MMM dd, yyyy HH:mm a' }}</div>
   <app-date-picker (dateSelected)="onDateSelected($event)"></app-date-picker>
 </div>
