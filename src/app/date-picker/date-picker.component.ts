@@ -136,6 +136,38 @@ export class DatePickerComponent implements OnInit {
       }
     }
 
+    public handleTimeKeydown(event: KeyboardEvent): void {
+      const target = event.target as HTMLInputElement;
+      const key = event.key;
+
+      // Allow control keys (Backspace, Tab, Enter, Delete, Arrows, etc.)
+      const isControlKey = [
+        'Backspace', 'Tab', 'Enter', 'Escape', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End'
+      ].includes(key);
+
+      if (isControlKey || (event.ctrlKey && ['a', 'c', 'v', 'x'].includes(key.toLowerCase()))) {
+        return;
+      }
+
+      // Check if it's a digit
+      if (!/^\d$/.test(key)) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      // If there's a selection, the keypress will replace it, so allow it
+      if (target.selectionStart !== target.selectionEnd) {
+        return;
+      }
+
+      // Prevent if already has 2 digits and we're not replacing anything
+      if (target.value.length >= 2) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }
+
     private updateDateWithTime(date: Date): void {
       let h = this.hours();
       const p = this.period();
