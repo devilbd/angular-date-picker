@@ -180,7 +180,7 @@ export class DatePickerComponent implements OnInit {
       const target = event.target as HTMLInputElement;
       const key = event.key;
 
-      // Allow control keys (Backspace, Tab, Enter, Delete, Arrows, etc.)
+      // Allow control keys (Backspace, Tab, Enter, Escape, Delete, Arrows, etc.)
       const isControlKey = [
         'Backspace', 'Tab', 'Enter', 'Escape', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End'
       ].includes(key);
@@ -206,6 +206,24 @@ export class DatePickerComponent implements OnInit {
         event.preventDefault();
         event.stopPropagation();
       }
+    }
+
+    public handleWheel(event: WheelEvent, type: 'hours' | 'minutes'): void {
+      event.preventDefault();
+      const delta = event.deltaY < 0 ? 1 : -1;
+      
+      if (type === 'hours') {
+        let h = this.workingHours() + delta;
+        if (h > 12) h = 1;
+        if (h < 1) h = 12;
+        this.workingHours.set(h);
+      } else {
+        let m = this.workingMinutes() + delta;
+        if (m > 59) m = 0;
+        if (m < 0) m = 59;
+        this.workingMinutes.set(m);
+      }
+      this.onTimeChange();
     }
 
     private updateDateWithTime(date: Date): void {

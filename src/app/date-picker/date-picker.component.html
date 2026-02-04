@@ -71,6 +71,7 @@
               (input)="workingHours.set(parseInt($any($event.target).value, 10)); onTimeChange()"
               (change)="onTimeChange()"
               (keydown)="handleTimeKeydown($event)"
+              (wheel)="handleWheel($event, 'hours')"
               aria-label="Hours"
             >
             <span class="separator">:</span>
@@ -82,6 +83,7 @@
               (input)="workingMinutes.set(parseInt($any($event.target).value, 10)); onTimeChange()"
               (change)="onTimeChange()"
               (keydown)="handleTimeKeydown($event)"
+              (wheel)="handleWheel($event, 'minutes')"
               aria-label="Minutes"
             >
           </div>
