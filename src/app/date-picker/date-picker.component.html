@@ -42,8 +42,8 @@
             type="number" 
             min="1" 
             max="12" 
-            [value]="hours()" 
-            (input)="hours.set($any($event.target).valueAsNumber); onTimeChange()"
+            [value]="workingHours()" 
+            (input)="workingHours.set($any($event.target).valueAsNumber); onTimeChange()"
             (change)="onTimeChange()"
             (keydown)="handleTimeKeydown($event)"
             aria-label="Hours"
@@ -53,21 +53,25 @@
             type="number" 
             min="0" 
             max="59" 
-            [value]="minutes()" 
-            (input)="minutes.set($any($event.target).valueAsNumber); onTimeChange()"
+            [value]="workingMinutes()" 
+            (input)="workingMinutes.set($any($event.target).valueAsNumber); onTimeChange()"
             (change)="onTimeChange()"
             (keydown)="handleTimeKeydown($event)"
             aria-label="Minutes"
           >
         </div>
         <select 
-          [value]="period()" 
-          (change)="period.set($any($event.target).value); onTimeChange()"
+          [value]="workingPeriod()" 
+          (change)="workingPeriod.set($any($event.target).value); onTimeChange()"
           aria-label="AM/PM"
         >
           <option value="AM">AM</option>
           <option value="PM">PM</option>
         </select>
+      </div>
+
+      <div class="picker-footer">
+        <button class="confirm-button" (click)="confirmSelection()" type="button">OK</button>
       </div>
     </div>
   }

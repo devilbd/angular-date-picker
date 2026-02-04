@@ -21,10 +21,11 @@ export class DatePickerComponent implements OnInit {
     public selectedDate = signal<Date | null>(null);
     public viewDate = signal(new Date());
 
-    // Time Signals
-    public hours = signal(12);
-    public minutes = signal(0);
-    public period = signal<'AM' | 'PM'>('AM');
+    // Working (unconfirmed) signals
+    public workingDate = signal<Date | null>(null);
+    public workingHours = signal(12);
+    public workingMinutes = signal(0);
+    public workingPeriod = signal<'AM' | 'PM'>('AM');
 
     // Outputs
     public dateSelected = output<Date>();
@@ -49,8 +50,8 @@ export class DatePickerComponent implements OnInit {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      const selected = this.selectedDate();
-      const selectedCompare = selected ? new Date(selected.getFullYear(), selected.getMonth(), selected.getDate()).getTime() : null;
+      const working = this.workingDate();
+      const selectedCompare = working ? new Date(working.getFullYear(), working.getMonth(), working.getDate()).getTime() : null;
 
       // Days from previous month to fill the first row
       const startDayOfWeek = firstDay.getDay(); // 0 is Sunday
@@ -77,11 +78,17 @@ export class DatePickerComponent implements OnInit {
     });
 
     ngOnInit(): void {
-      // Initialize with current time if needed
-      const now = new Date();
-      this.hours.set(now.getHours() % 12 || 12);
-      this.minutes.set(now.getMinutes());
-      this.period.set(now.getHours() >= 12 ? 'PM' : 'AM');
+      this.initWorkingState();
+    }
+
+    private initWorkingState(): void {
+      const baseDate = this.selectedDate() || new Date();
+      this.workingDate.set(this.selectedDate());
+      this.viewDate.set(new Date(baseDate.getFullYear(), baseDate.getMonth(), 1));
+      
+      this.workingHours.set(baseDate.getHours() % 12 || 12);
+      this.workingMinutes.set(baseDate.getMinutes());
+      this.workingPeriod.set(baseDate.getHours() >= 12 ? 'PM' : 'AM');
     }
 
     private createCalendarDay(date: Date, isCurrentMonth: boolean, today: Date, selectedTime: number | null): CalendarDay {
@@ -95,14 +102,25 @@ export class DatePickerComponent implements OnInit {
     }
 
     public togglePicker(): void {
+      if (!this.isOpen()) {
+        this.initWorkingState();
+      }
       this.isOpen.update(v => !v);
     }
 
     public selectDay(day: CalendarDay): void {
-      const newDate = new Date(day.date);
-      this.updateDateWithTime(newDate);
-      this.selectedDate.set(newDate);
-      this.emitSelection();
+      this.workingDate.set(new Date(day.date));
+    }
+
+    public confirmSelection(): void {
+      const working = this.workingDate();
+      if (working) {
+        const confirmed = new Date(working);
+        this.updateDateWithTime(confirmed);
+        this.selectedDate.set(confirmed);
+        this.emitSelection();
+      }
+      this.isOpen.set(false);
     }
 
     public prevMonth(): void {
@@ -117,23 +135,15 @@ export class DatePickerComponent implements OnInit {
 
     public onTimeChange(): void {
       // Enforce constraints
-      let h = this.hours();
+      let h = this.workingHours();
       if (isNaN(h) || h < 1) h = 1;
       if (h > 12) h = 12;
-      this.hours.set(h);
+      this.workingHours.set(h);
 
-      let m = this.minutes();
+      let m = this.workingMinutes();
       if (isNaN(m) || m < 0) m = 0;
       if (m > 59) m = 59;
-      this.minutes.set(m);
-
-      const current = this.selectedDate();
-      if (current) {
-        const updated = new Date(current);
-        this.updateDateWithTime(updated);
-        this.selectedDate.set(updated);
-        this.emitSelection();
-      }
+      this.workingMinutes.set(m);
     }
 
     public handleTimeKeydown(event: KeyboardEvent): void {
@@ -169,11 +179,11 @@ export class DatePickerComponent implements OnInit {
     }
 
     private updateDateWithTime(date: Date): void {
-      let h = this.hours();
-      const p = this.period();
+      let h = this.workingHours();
+      const p = this.workingPeriod();
       if (p === 'PM' && h !== 12) h += 12;
       if (p === 'AM' && h === 12) h = 0;
-      date.setHours(h, this.minutes(), 0, 0);
+      date.setHours(h, this.workingMinutes(), 0, 0);
     }
 
     private emitSelection(): void {
