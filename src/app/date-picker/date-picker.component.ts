@@ -35,6 +35,9 @@ export class DatePickerComponent implements OnInit {
       return Array.from({ length: 21 }, (_, i) => startYear + i);
     });
 
+    // Utils
+    public parseInt = parseInt;
+
     // Outputs
     public dateSelected = output<Date>();
 
