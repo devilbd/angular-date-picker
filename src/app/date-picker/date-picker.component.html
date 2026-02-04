@@ -39,6 +39,8 @@
                 [class.off-month]="!day.isCurrentMonth"
                 [class.today]="day.isToday"
                 [class.selected]="day.isSelected"
+                [class.disabled]="day.isDisabled"
+                [disabled]="day.isDisabled"
                 (click)="selectDay(day)"
                 type="button"
               >

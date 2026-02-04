@@ -232,6 +232,18 @@
             font-weight: bold;
             border-radius: var(--dp-radius-circle);
         }
+
+        &.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: transparent !important;
+            color: var(--dp-text-muted) !important;
+            
+            &:hover {
+                background: transparent !important;
+                color: var(--dp-text-muted) !important;
+            }
+        }
     }
 }
 

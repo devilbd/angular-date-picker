@@ -11,6 +11,15 @@ import { CommonModule } from '@angular/common';
 export class App {
     protected readonly title = signal('angular-date-picker');
     public selectedDate = signal<Date | null>(null);
+    
+    // Date and time restrictions
+    public pickerRestrictions = {
+      // daysBack: 0,
+      // daysForward: 7,
+      // minTime: '13:00', // 1 PM
+      // maxTime: '18:00', // 6 PM
+      // disabledDates: [new Date(new Date().setDate(new Date().getDate() + 2))]
+    };
 
     constructor() {
       const saved = localStorage.getItem('selectedDate');

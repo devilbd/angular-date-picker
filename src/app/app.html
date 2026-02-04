@@ -4,6 +4,7 @@
   <app-date-picker 
       [selectedDate]="selectedDate()" 
       (dateSelected)="onDateSelected($event)" 
+      [restrictions]="pickerRestrictions"
       [enableBlur]="true">
   </app-date-picker>
 </div>

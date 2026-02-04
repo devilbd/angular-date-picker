@@ -1,11 +1,30 @@
 import { Component, OnInit, signal, computed, output, model, input, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
+export interface DateRestriction {
+    minDate?: Date;
+    maxDate?: Date;
+    daysBack?: number;
+    daysForward?: number;
+    weeksBack?: number;
+    weeksForward?: number;
+    monthsBack?: number;
+    monthsForward?: number;
+    yearsBack?: number;
+    yearsForward?: number;
+    pastOnly?: boolean;
+    futureOnly?: boolean;
+    disabledDates?: Date[];
+    minTime?: string; // HH:mm format
+    maxTime?: string; // HH:mm format
+}
+
 interface CalendarDay {
     date: Date;
     isCurrentMonth: boolean;
     isToday: boolean;
     isSelected: boolean;
+    isDisabled: boolean;
 }
 
 @Component({
@@ -21,6 +40,64 @@ export class DatePickerComponent implements OnInit {
     public selectedDate = model<Date | null>(null);
     public viewDate = signal(new Date());
     public enableBlur = model<boolean>(false);
+    public restrictions = input<DateRestriction | null>(null);
+
+    // Computed restriction bounds
+    private effectiveMinDate = computed(() => {
+      const rest = this.restrictions();
+      if (!rest) return null;
+
+      const now = new Date();
+      const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      const bounds: (number | null)[] = [];
+
+      if (rest.minDate) bounds.push(rest.minDate.getTime());
+      if (rest.daysBack !== undefined) bounds.push(startOfToday.getTime() - rest.daysBack * 86400000);
+      if (rest.weeksBack !== undefined) bounds.push(startOfToday.getTime() - rest.weeksBack * 7 * 86400000);
+      if (rest.monthsBack !== undefined) {
+        const d = new Date(startOfToday);
+        d.setMonth(d.getMonth() - rest.monthsBack);
+        bounds.push(d.getTime());
+      }
+      if (rest.yearsBack !== undefined) {
+        const d = new Date(startOfToday);
+        d.setFullYear(d.getFullYear() - rest.yearsBack);
+        bounds.push(d.getTime());
+      }
+      if (rest.futureOnly) bounds.push(now.getTime());
+
+      const validBounds = bounds.filter((b): b is number => b !== null);
+      return validBounds.length > 0 ? new Date(Math.max(...validBounds)) : null;
+    });
+
+    private effectiveMaxDate = computed(() => {
+      const rest = this.restrictions();
+      if (!rest) return null;
+
+      const now = new Date();
+      const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+      const bounds: (number | null)[] = [];
+
+      if (rest.maxDate) bounds.push(rest.maxDate.getTime());
+      if (rest.daysForward !== undefined) bounds.push(endOfToday.getTime() + rest.daysForward * 86400000);
+      if (rest.weeksForward !== undefined) bounds.push(endOfToday.getTime() + rest.weeksForward * 7 * 86400000);
+      if (rest.monthsForward !== undefined) {
+        const d = new Date(endOfToday);
+        d.setMonth(d.getMonth() + rest.monthsForward);
+        bounds.push(d.getTime());
+      }
+      if (rest.yearsForward !== undefined) {
+        const d = new Date(endOfToday);
+        d.setFullYear(d.getFullYear() + rest.yearsForward);
+        bounds.push(d.getTime());
+      }
+      if (rest.pastOnly) bounds.push(now.getTime());
+
+      const validBounds = bounds.filter((b): b is number => b !== null);
+      return validBounds.length > 0 ? new Date(Math.min(...validBounds)) : null;
+    });
 
     // Working (unconfirmed) signals
     public workingDate = signal<Date | null>(null);
@@ -101,15 +178,37 @@ export class DatePickerComponent implements OnInit {
       this.workingHours.set(baseDate.getHours() % 12 || 12);
       this.workingMinutes.set(baseDate.getMinutes());
       this.workingPeriod.set(baseDate.getHours() >= 12 ? 'PM' : 'AM');
+      
+      this.enforceTimeRestrictions();
     }
 
     private createCalendarDay(date: Date, isCurrentMonth: boolean, today: Date, selectedTime: number | null): CalendarDay {
-      const compareDate = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+      const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0).getTime();
+      const dayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999).getTime();
+      
+      const min = this.effectiveMinDate();
+      const max = this.effectiveMaxDate();
+      const rest = this.restrictions();
+
+      let isDisabled = false;
+      if (min && dayEnd < min.getTime()) isDisabled = true;
+      if (max && dayStart > max.getTime()) isDisabled = true;
+      
+      if (rest?.disabledDates) {
+        const isDisabledSpecific = rest.disabledDates.some(d => 
+          d.getFullYear() === date.getFullYear() && 
+          d.getMonth() === date.getMonth() && 
+          d.getDate() === date.getDate()
+        );
+        if (isDisabledSpecific) isDisabled = true;
+      }
+
       return {
         date,
         isCurrentMonth,
-        isToday: compareDate === today.getTime(),
-        isSelected: compareDate === selectedTime,
+        isToday: dayStart === today.getTime(),
+        isSelected: dayStart === selectedTime,
+        isDisabled,
       };
     }
 
@@ -122,7 +221,9 @@ export class DatePickerComponent implements OnInit {
     }
 
     public selectDay(day: CalendarDay): void {
+      if (day.isDisabled) return;
       this.workingDate.set(new Date(day.date));
+      this.enforceTimeRestrictions();
     }
 
     public toggleYearPicker(): void {
@@ -165,7 +266,7 @@ export class DatePickerComponent implements OnInit {
     }
 
     public onTimeChange(): void {
-      // Enforce constraints
+      // Basic numeric constraints
       let h = this.workingHours();
       if (isNaN(h) || h < 1) h = 1;
       if (h > 12) h = 12;
@@ -175,6 +276,75 @@ export class DatePickerComponent implements OnInit {
       if (isNaN(m) || m < 0) m = 0;
       if (m > 59) m = 59;
       this.workingMinutes.set(m);
+
+      this.enforceTimeRestrictions();
+    }
+
+    private enforceTimeRestrictions(): void {
+      const rest = this.restrictions();
+      if (!rest) return;
+
+      const working = this.workingDate();
+      if (!working) return;
+
+      const current = new Date(working);
+      this.updateDateWithTime(current);
+
+      const min = this.effectiveMinDate();
+      const max = this.effectiveMaxDate();
+
+      // Check minDate restriction
+      if (min && current.getTime() < min.getTime()) {
+        this.applyDateToWorking(min);
+        this.updateDateWithTime(current);
+      }
+
+      // Check maxDate restriction
+      if (max && current.getTime() > max.getTime()) {
+        this.applyDateToWorking(max);
+        this.updateDateWithTime(current);
+      }
+
+      // Check per-day minTime/maxTime restrictions
+      if (rest.minTime || rest.maxTime) {
+        const timeVal = this.workingHours24() * 60 + this.workingMinutes();
+        
+        if (rest.minTime) {
+          const [minH, minM] = rest.minTime.split(':').map(Number);
+          const minVal = minH * 60 + minM;
+          if (timeVal < minVal) {
+            this.setWorkingTime(minH, minM);
+          }
+        }
+
+        if (rest.maxTime) {
+          const [maxH, maxM] = rest.maxTime.split(':').map(Number);
+          const maxVal = maxH * 60 + maxM;
+          if (timeVal > maxVal) {
+            this.setWorkingTime(maxH, maxM);
+          }
+        }
+      }
+    }
+
+    private workingHours24(): number {
+      let h = this.workingHours();
+      const p = this.workingPeriod();
+      if (p === 'PM' && h !== 12) h += 12;
+      if (p === 'AM' && h === 12) h = 0;
+      return h;
+    }
+
+    private setWorkingTime(h24: number, m: number): void {
+      const period = h24 >= 12 ? 'PM' : 'AM';
+      const h12 = h24 % 12 || 12;
+      this.workingHours.set(h12);
+      this.workingMinutes.set(m);
+      this.workingPeriod.set(period);
+    }
+
+    private applyDateToWorking(date: Date): void {
+      this.setWorkingTime(date.getHours(), date.getMinutes());
     }
 
     public handleTimeKeydown(event: KeyboardEvent): void {
