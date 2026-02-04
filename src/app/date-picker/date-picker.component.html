@@ -1,0 +1,72 @@
+<div class="date-picker-container">
+  <button class="picker-toggle" (click)="togglePicker()" type="button" aria-haspopup="dialog" [attr.aria-expanded]="isOpen()">
+    @if (selectedDate()) {
+      {{ selectedDate() | date: 'MMM dd, yyyy HH:mm a' }}
+    } @else {
+      + choose date
+    }
+  </button>
+
+  @if (isOpen()) {
+    <div class="picker-overlay" role="dialog" aria-label="Date and time picker">
+      <div class="calendar-header">
+        <button (click)="prevMonth()" type="button" aria-label="Previous month">&lt;</button>
+        <span class="month-label">{{ monthYearLabel() }}</span>
+        <button (click)="nextMonth()" type="button" aria-label="Next month">&gt;</button>
+      </div>
+
+      <div class="calendar-grid">
+        <!-- Weekday headers -->
+        @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track day) {
+          <div class="weekday">{{ day }}</div>
+        }
+
+        <!-- Calendar days -->
+        @for (day of calendarDays(); track day.date) {
+          <button 
+            class="day-cell" 
+            [class.off-month]="!day.isCurrentMonth"
+            [class.today]="day.isToday"
+            [class.selected]="day.isSelected"
+            (click)="selectDay(day)"
+            type="button"
+          >
+            {{ day.date.getDate() }}
+          </button>
+        }
+      </div>
+
+      <div class="time-picker">
+        <div class="time-input-group">
+          <input 
+            type="number" 
+            min="1" 
+            max="12" 
+            [value]="hours()" 
+            (input)="hours.set($any($event.target).valueAsNumber); onTimeChange()"
+            (change)="onTimeChange()"
+            aria-label="Hours"
+          >
+          <span>:</span>
+          <input 
+            type="number" 
+            min="0" 
+            max="59" 
+            [value]="minutes()" 
+            (input)="minutes.set($any($event.target).valueAsNumber); onTimeChange()"
+            (change)="onTimeChange()"
+            aria-label="Minutes"
+          >
+        </div>
+        <select 
+          [value]="period()" 
+          (change)="period.set($any($event.target).value); onTimeChange()"
+          aria-label="AM/PM"
+        >
+          <option value="AM">AM</option>
+          <option value="PM">PM</option>
+        </select>
+      </div>
+    </div>
+  }
+</div>
