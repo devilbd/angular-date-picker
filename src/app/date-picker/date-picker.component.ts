@@ -128,6 +128,14 @@ export class DatePickerComponent implements OnInit {
     public selectYear(year: number): void {
       const current = this.viewDate();
       this.viewDate.set(new Date(year, current.getMonth(), 1));
+      
+      const working = this.workingDate();
+      if (working) {
+        const updated = new Date(working);
+        updated.setFullYear(year);
+        this.workingDate.set(updated);
+      }
+
       this.viewMode.set('calendar');
     }
 
