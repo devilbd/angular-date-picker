@@ -8,8 +8,8 @@
   --dp-primary-shadow: rgba(59, 130, 246, 0.3);
   
   // Background Colors
-  --dp-bg-overlay: linear-gradient(145deg, rgba(30,32,45, 0.98), rgba(18,18,25, 0.98));
-  --dp-bg-overlay-blur: linear-gradient(145deg, rgba(30,32,45, 0.7), rgba(18,18,25, 0.7));
+  --dp-bg-overlay: linear-gradient(145deg, rgba(20,22,35, 0.98), rgba(10,10,15, 0.98));
+  --dp-bg-overlay-blur: linear-gradient(145deg, rgba(20,22,35, 0.7), rgba(10,10,15, 0.7));
   --dp-bg-input: rgba(255, 255, 255, 0.05);
   --dp-bg-hover: rgba(255, 255, 255, 0.1);
   --dp-bg-subtle: rgba(255, 255, 255, 0.02);
@@ -46,7 +46,7 @@
     background: var(--dp-bg-input);
     backdrop-filter: blur(10px);
     border: 1px solid var(--dp-border);
-    color: #000;
+    color: var(--dp-text-main);
     padding: 8px 16px;
     border-radius: var(--dp-radius-md);
     cursor: pointer;
