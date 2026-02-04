@@ -35,7 +35,20 @@
   
   // Effects
   --dp-blur-intensity: 25px;
+  --dp-saturation: 180%;
+  --dp-body-blur: 8px;
   --dp-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  // Specific Elements
+  --dp-nav-color-default: rgba(59, 130, 246, 0.6);
+  --dp-accent-subtle: rgba(59, 130, 246, 0.1);
+  --dp-separator: rgba(255, 255, 255, 0.3);
+  --dp-scrollbar: rgba(255, 255, 255, 0.2);
+  --dp-inner-focus-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  
+  // Custom Hover states
+  --dp-bg-hover-strong: rgba(255, 255, 255, 0.15);
+  --dp-confirm-shadow-hover: 0 6px 16px rgba(37, 99, 235, 0.4);
 }
 
 .date-picker-container {
@@ -57,8 +70,8 @@
 
     &:hover {
         background: var(--dp-bg-hover);
-        border-color: rgba(255, 255, 255, 0.4);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: var(--dp-border);
+        box-shadow: var(--dp-shadow-main);
     }
 
     &:active {
@@ -84,8 +97,8 @@
 
   &.blur-enabled {
     background: var(--dp-bg-overlay-blur);
-    backdrop-filter: blur(var(--dp-blur-intensity)) saturate(180%);
-    -webkit-backdrop-filter: blur(var(--dp-blur-intensity)) saturate(180%);
+    backdrop-filter: blur(var(--dp-blur-intensity)) saturate(var(--dp-saturation));
+    -webkit-backdrop-filter: blur(var(--dp-blur-intensity)) saturate(var(--dp-saturation));
   }
 }
 
@@ -122,7 +135,7 @@
     .year-toggle {
       background: transparent;
       border: 1px solid transparent;
-      color: rgba(59, 130, 246, 0.6);
+      color: var(--dp-nav-color-default);
       cursor: pointer;
       padding: 4px;
       border-radius: var(--dp-radius-circle);
@@ -145,7 +158,7 @@
     button {
       background: transparent;
       border: 1px solid transparent;
-      color: rgba(59, 130, 246, 0.6);
+      color: var(--dp-nav-color-default);
       cursor: pointer;
       width: 28px;
       height: 28px;
@@ -231,7 +244,7 @@
   transition: filter 0.3s ease, transform 0.3s ease;
   
   &.blurred {
-    filter: blur(8px);
+    filter: blur(var(--dp-body-blur));
     transform: scale(0.98);
     pointer-events: none;
   }
@@ -275,7 +288,7 @@
     border-radius: 10px;
   }
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--dp-scrollbar);
     border-radius: 10px;
   }
 
@@ -291,7 +304,7 @@
     transition: var(--dp-transition);
 
     &:hover {
-      background: rgba(59, 130, 246, 0.1);
+      background: var(--dp-accent-subtle);
       border-color: var(--dp-primary-shadow);
       color: var(--dp-text-main);
     }
@@ -323,8 +336,8 @@
 
     &:focus-within {
       border-color: var(--dp-primary-color);
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+      background: var(--dp-bg-hover);
+      box-shadow: var(--dp-inner-focus-shadow);
     }
   }
 
@@ -354,7 +367,7 @@
     }
 
     .separator {
-      color: rgba(255, 255, 255, 0.3);
+      color: var(--dp-separator);
       font-weight: bold;
       margin: 0 2px;
     }
@@ -374,7 +387,7 @@
     margin-left: 4px;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: var(--dp-bg-hover-strong);
     }
 
     &:focus {
@@ -408,7 +421,7 @@
 
         &:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+            box-shadow: var(--dp-confirm-shadow-hover);
             filter: brightness(1.1);
         }
 
