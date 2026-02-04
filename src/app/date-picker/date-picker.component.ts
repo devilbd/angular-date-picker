@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, output, model, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, signal, computed, output, model, input, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 interface CalendarDay {
@@ -20,6 +20,7 @@ export class DatePickerComponent implements OnInit {
     public isOpen = signal(false);
     public selectedDate = model<Date | null>(null);
     public viewDate = signal(new Date());
+    public enableBlur = model<boolean>(false);
 
     // Working (unconfirmed) signals
     public workingDate = signal<Date | null>(null);

@@ -1,5 +1,5 @@
 <div>
   <div>Date picker</div>
   <div>Selected date - {{ selectedDate() | date: 'MMM dd, yyyy HH:mm a' }}</div>
-  <app-date-picker [selectedDate]="selectedDate()" (dateSelected)="onDateSelected($event)"></app-date-picker>
+  <app-date-picker [selectedDate]="selectedDate()" (dateSelected)="onDateSelected($event)" [enableBlur]="true"></app-date-picker>
 </div>

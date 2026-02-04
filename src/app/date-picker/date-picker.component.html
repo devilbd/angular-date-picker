@@ -8,7 +8,7 @@
   </button>
 
   @if (isOpen()) {
-    <div class="picker-overlay" role="dialog" aria-label="Date and time picker">
+    <div class="picker-overlay" [class.blur-enabled]="enableBlur()" role="dialog" aria-label="Date and time picker">
       <div class="calendar-header">
         <div class="label-group">
           <span class="month-label">{{ monthYearLabel() }}</span>
@@ -24,41 +24,47 @@
         </div>
       </div>
 
-      @if (viewMode() === 'calendar') {
-        <div class="calendar-grid">
-          <!-- Weekday headers -->
-          @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track day) {
-            <div class="weekday">{{ day }}</div>
-          }
+      <div class="picker-content-wrapper">
+        <div class="calendar-body" [class.blurred]="enableBlur() && viewMode() === 'year'">
+          <div class="calendar-grid">
+            <!-- Weekday headers -->
+            @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track day) {
+              <div class="weekday">{{ day }}</div>
+            }
 
-          <!-- Calendar days -->
-          @for (day of calendarDays(); track day.date) {
-            <button 
-              class="day-cell" 
-              [class.off-month]="!day.isCurrentMonth"
-              [class.today]="day.isToday"
-              [class.selected]="day.isSelected"
-              (click)="selectDay(day)"
-              type="button"
-            >
-              {{ day.date.getDate() }}
-            </button>
-          }
+            <!-- Calendar days -->
+            @for (day of calendarDays(); track day.date) {
+              <button 
+                class="day-cell" 
+                [class.off-month]="!day.isCurrentMonth"
+                [class.today]="day.isToday"
+                [class.selected]="day.isSelected"
+                (click)="selectDay(day)"
+                type="button"
+              >
+                {{ day.date.getDate() }}
+              </button>
+            }
+          </div>
         </div>
-      } @else {
-        <div class="year-grid">
-          @for (year of years(); track year) {
-            <button 
-              class="year-cell" 
-              [class.selected]="year === viewDate().getFullYear()"
-              (click)="selectYear(year)"
-              type="button"
-            >
-              {{ year }}
-            </button>
-          }
-        </div>
-      }
+
+        @if (viewMode() === 'year') {
+          <div class="year-selector-overlay">
+            <div class="year-grid">
+              @for (year of years(); track year) {
+                <button 
+                  class="year-cell" 
+                  [class.selected]="year === viewDate().getFullYear()"
+                  (click)="selectYear(year)"
+                  type="button"
+                >
+                  {{ year }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
 
       <div class="time-picker">
         <div class="time-inner-container">
