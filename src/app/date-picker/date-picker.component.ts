@@ -23,9 +23,17 @@ export class DatePickerComponent implements OnInit {
 
     // Working (unconfirmed) signals
     public workingDate = signal<Date | null>(null);
-    public workingHours = signal(12);
-    public workingMinutes = signal(0);
+    public workingHours = signal<number>(12);
+    public workingMinutes = signal<number>(0);
     public workingPeriod = signal<'AM' | 'PM'>('AM');
+
+    // View state
+    public viewMode = signal<'calendar' | 'year'>('calendar');
+    public years = computed(() => {
+      const currentYear = this.viewDate().getFullYear();
+      const startYear = currentYear - 10;
+      return Array.from({ length: 21 }, (_, i) => startYear + i);
+    });
 
     // Outputs
     public dateSelected = output<Date>();
@@ -104,12 +112,23 @@ export class DatePickerComponent implements OnInit {
     public togglePicker(): void {
       if (!this.isOpen()) {
         this.initWorkingState();
+        this.viewMode.set('calendar');
       }
       this.isOpen.update(v => !v);
     }
 
     public selectDay(day: CalendarDay): void {
       this.workingDate.set(new Date(day.date));
+    }
+
+    public toggleYearPicker(): void {
+      this.viewMode.update(v => v === 'calendar' ? 'year' : 'calendar');
+    }
+
+    public selectYear(year: number): void {
+      const current = this.viewDate();
+      this.viewDate.set(new Date(year, current.getMonth(), 1));
+      this.viewMode.set('calendar');
     }
 
     public confirmSelection(): void {

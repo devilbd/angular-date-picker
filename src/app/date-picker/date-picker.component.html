@@ -10,33 +10,55 @@
   @if (isOpen()) {
     <div class="picker-overlay" role="dialog" aria-label="Date and time picker">
       <div class="calendar-header">
-        <span class="month-label">{{ monthYearLabel() }}</span>
+        <div class="label-group">
+          <span class="month-label">{{ monthYearLabel() }}</span>
+          <button class="year-toggle" (click)="toggleYearPicker()" type="button" aria-label="Toggle year picker">
+            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
         <div class="header-nav">
           <button (click)="prevMonth()" type="button" aria-label="Previous month">&lt;</button>
           <button (click)="nextMonth()" type="button" aria-label="Next month">&gt;</button>
         </div>
       </div>
 
-      <div class="calendar-grid">
-        <!-- Weekday headers -->
-        @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track day) {
-          <div class="weekday">{{ day }}</div>
-        }
+      @if (viewMode() === 'calendar') {
+        <div class="calendar-grid">
+          <!-- Weekday headers -->
+          @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track day) {
+            <div class="weekday">{{ day }}</div>
+          }
 
-        <!-- Calendar days -->
-        @for (day of calendarDays(); track day.date) {
-          <button 
-            class="day-cell" 
-            [class.off-month]="!day.isCurrentMonth"
-            [class.today]="day.isToday"
-            [class.selected]="day.isSelected"
-            (click)="selectDay(day)"
-            type="button"
-          >
-            {{ day.date.getDate() }}
-          </button>
-        }
-      </div>
+          <!-- Calendar days -->
+          @for (day of calendarDays(); track day.date) {
+            <button 
+              class="day-cell" 
+              [class.off-month]="!day.isCurrentMonth"
+              [class.today]="day.isToday"
+              [class.selected]="day.isSelected"
+              (click)="selectDay(day)"
+              type="button"
+            >
+              {{ day.date.getDate() }}
+            </button>
+          }
+        </div>
+      } @else {
+        <div class="year-grid">
+          @for (year of years(); track year) {
+            <button 
+              class="year-cell" 
+              [class.selected]="year === viewDate().getFullYear()"
+              (click)="selectYear(year)"
+              type="button"
+            >
+              {{ year }}
+            </button>
+          }
+        </div>
+      }
 
       <div class="time-picker">
         <div class="time-inner-container">

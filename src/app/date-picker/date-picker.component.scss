@@ -64,11 +64,35 @@
   margin-bottom: 20px;
   padding: 0 4px;
 
-  .month-label {
-    color: #fff;
-    font-weight: 600;
-    font-size: 15px;
-    letter-spacing: -0.01em;
+  .label-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    .month-label {
+      color: #fff;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+    }
+
+    .year-toggle {
+      background: transparent;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #3b82f6;
+      }
+    }
   }
 
   .header-nav {
@@ -154,6 +178,54 @@
             border-radius: 50%;
         }
     }
+}
+
+.year-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  height: 220px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding-right: 4px;
+
+  /* Scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+  }
+
+  .year-cell {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+
+    &:hover {
+      background: rgba(59, 130, 246, 0.1);
+      border-color: rgba(59, 130, 246, 0.3);
+      color: #fff;
+    }
+
+    &.selected {
+      background: #3b82f6;
+      color: #fff;
+      border-color: #3b82f6;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+  }
 }
 
 .time-picker {
